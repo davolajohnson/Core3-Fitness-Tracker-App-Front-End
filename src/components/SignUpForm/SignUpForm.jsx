@@ -46,8 +46,9 @@ const SignUpForm = () => {
           <label htmlFor='username'>Username:</label>
           <input
             type='text'
-            id='name'
+            id='username'
             value={username}
+            autoComplete='off'
             name='username'
             onChange={handleChange}
             required
@@ -58,6 +59,7 @@ const SignUpForm = () => {
           <input
             type='password'
             id='password'
+            autoComplete='off'
             value={password}
             name='password'
             onChange={handleChange}
@@ -70,6 +72,7 @@ const SignUpForm = () => {
             type='password'
             id='confirm'
             value={passwordConf}
+            autoComplete='off'
             name='passwordConf'
             onChange={handleChange}
             required
