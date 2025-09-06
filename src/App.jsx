@@ -14,7 +14,20 @@ import { UserContext } from './contexts/UserContext';
 const App = () => {
   const { user } = useContext(UserContext);
   const navigate = useNavigate()
-  const [workouts, setWorkouts] = useState([])
+  const [workouts, setWorkouts] = useState([
+    {
+      _id: '1',
+      date: '2025-09-01',
+      notes: 'Leg day! Squats and lunges',
+      duration: 45,
+    },
+    {
+      _id: '2',
+      date: '2025-09-02',
+      notes: 'Chest + Triceps workout',
+      duration: 60,
+    },
+  ])
 
   useEffect(() => {
     const fetchAllWorkouts = async () => {
