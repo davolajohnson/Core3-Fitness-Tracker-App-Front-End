@@ -1,8 +1,6 @@
 import { useState, useContext } from 'react';
-import { useNavigate } from 'react-router';
-
-import { signUp } from '../../services/authService';
-
+import { useNavigate } from 'react-router-dom';
+import { signUp } from '../../services/authServices';
 import { UserContext } from '../../contexts/UserContext';
 
 const SignUpForm = () => {
@@ -17,15 +15,17 @@ const SignUpForm = () => {
 
   const { username, password, passwordConf } = formData;
 
-  const handleChange = (evt) => {
+  const handleChange = (e) => {
     setMessage('');
-    setFormData({ ...formData, [evt.target.name]: evt.target.value });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (evt) => {
-    evt.preventDefault();
+  const isFormInvalid = () => !(username && password && password === passwordConf);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
-      const newUser = await signUp(formData);
+      const newUser = await signUp({ username, password });
       setUser(newUser);
       navigate('/');
     } catch (err) {
@@ -33,54 +33,49 @@ const SignUpForm = () => {
     }
   };
 
-  const isFormInvalid = () => {
-    return !(username && password && password === passwordConf);
-  };
-
   return (
     <main>
       <h1>Sign Up</h1>
-      <p>{message}</p>
+      {message && <p role="alert">{message}</p>}
       <form onSubmit={handleSubmit}>
         <div>
-          <label htmlFor='username'>Username:</label>
+          <label htmlFor="username">Username:</label>
           <input
-            type='text'
-            id='username'
+            id="username"
+            name="username"
+            type="text"
             value={username}
-            autoComplete='off'
             name='username'
             onChange={handleChange}
             required
           />
         </div>
         <div>
-          <label htmlFor='password'>Password:</label>
+          <label htmlFor="password">Password:</label>
           <input
             type='password'
             id='password'
-            autoComplete='off'
             value={password}
-            name='password'
             onChange={handleChange}
             required
+            minLength={8}
           />
         </div>
         <div>
-          <label htmlFor='confirm'>Confirm Password:</label>
+          <label htmlFor="passwordConf">Confirm Password:</label>
           <input
-            type='password'
-            id='confirm'
+            id="passwordConf"
+            name="passwordConf"
+            type="password"
             value={passwordConf}
-            autoComplete='off'
             name='passwordConf'
             onChange={handleChange}
             required
           />
         </div>
         <div>
-          <button disabled={isFormInvalid()}>Sign Up</button>
-          <button onClick={() => navigate('/')}>Cancel</button>
+          <button type="submit" disabled={isFormInvalid()}>Sign Up</button>
+          <button type="button" onClick={() => navigate('/')}>Cancel</button>
         </div>
       </form>
     </main>

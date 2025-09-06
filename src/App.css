@@ -1,0 +1,11 @@
+/* Theme tokens */
+:root {
+  --bg: #f6f8fb;
+  --card: #ffffff;
+  --text: #0f172a;
+  --muted: #475569;
+  --primary: #2563eb;
+  --danger: #dc2626;
+  --border: #e5e7eb;
+}
+
