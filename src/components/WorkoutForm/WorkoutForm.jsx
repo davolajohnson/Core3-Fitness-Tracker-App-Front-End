@@ -1,4 +1,5 @@
 import {useState} from 'react'
+import ExerciseForm from '../ExerciseForm/ExerciseForm'
 
 const WorkoutForm = ({handleAddWorkout}) => {
     const [formData, setFormData] = useState({
@@ -6,14 +7,17 @@ const WorkoutForm = ({handleAddWorkout}) => {
         notes: '',
         duration: '',
       });
+    const [exercises, setExercises] = useState([]);
+
     const handleChange = (evt) => {
         setFormData({ ...formData, [evt.target.name]: evt.target.value });
       };
- 
- 
     const handleSubmit = (evt) => {
         evt.preventDefault();
         handleAddWorkout(formData)
+      };
+      const handleAddExercise = (exercise) => {
+        setExercises([...exercises, exercise]);
       };
  
  
@@ -42,6 +46,18 @@ const WorkoutForm = ({handleAddWorkout}) => {
       type='number'
       min='1'
       />
+
+      <ExerciseForm handleAddExercise={handleAddExercise}/>
+      {exercises.length > 0 && (
+    <ul>
+        <h3>Exercises:</h3>
+      {exercises.map((ex, idx) => (
+        <li key={idx}>
+          {ex.name} — {ex.sets} sets × {ex.reps} reps @ {ex.weight} lbs
+        </li>
+      ))}
+    </ul>
+  )}
       <button type='submit'>Add</button>
     </form>
     </main>
