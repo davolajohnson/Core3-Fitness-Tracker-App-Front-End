@@ -20,7 +20,9 @@ const SignUpForm = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const isFormInvalid = () => !(username && password && password === passwordConf);
+  const isFormInvalid = () => {
+    return !(username && password && password === passwordConf);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -37,45 +39,52 @@ const SignUpForm = () => {
     <main>
       <h1>Sign Up</h1>
       {message && <p role="alert">{message}</p>}
+
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="username">Username:</label>
           <input
             id="username"
-            name="username"
             type="text"
+            name="username"
             value={username}
-            name='username'
             onChange={handleChange}
             required
           />
         </div>
+
         <div>
           <label htmlFor="password">Password:</label>
           <input
-            type='password'
-            id='password'
+            id="password"
+            type="password"
+            name="password"
             value={password}
             onChange={handleChange}
             required
             minLength={8}
           />
         </div>
+
         <div>
           <label htmlFor="passwordConf">Confirm Password:</label>
           <input
             id="passwordConf"
-            name="passwordConf"
             type="password"
+            name="passwordConf"
             value={passwordConf}
-            name='passwordConf'
             onChange={handleChange}
             required
           />
         </div>
+
         <div>
-          <button type="submit" disabled={isFormInvalid()}>Sign Up</button>
-          <button type="button" onClick={() => navigate('/')}>Cancel</button>
+          <button type="submit" disabled={isFormInvalid()}>
+            Sign Up
+          </button>
+          <button type="button" onClick={() => navigate('/')}>
+            Cancel
+          </button>
         </div>
       </form>
     </main>

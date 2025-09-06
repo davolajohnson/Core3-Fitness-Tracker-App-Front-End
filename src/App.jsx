@@ -1,5 +1,5 @@
 import { useContext, useState, useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 
 import NavBar from './components/NavBar/NavBar';
 import SignUpForm from './components/SignUpForm/SignUpForm';
@@ -9,14 +9,13 @@ import Dashboard from './components/Dashboard/Dashboard';
 import WorkoutList from './components/WorkoutList/WorkoutList';
 import WorkoutForm from './components/WorkoutForm/WorkoutForm';
 
-
 import * as workoutService from './services/workoutService';
 import { UserContext } from './contexts/UserContext';
 
 const App = () => {
+  const navigate = useNavigate();                 // ✅ define the hook
   const { user } = useContext(UserContext);
-  const navigate = useNavigate()
-  const [workouts, setWorkouts] = useState([])
+  const [workouts, setWorkouts] = useState([]);
 
   useEffect(() => {
     const fetchAllWorkouts = async () => {
@@ -28,7 +27,10 @@ const App = () => {
 
   const handleAddWorkout = async (formData) => {
     const newWorkout = await workoutService.create(formData);
-    if (newWorkout) setWorkouts([newWorkout, ...workouts]);
+    if (newWorkout) {
+      setWorkouts([newWorkout, ...workouts]);
+      navigate('/workouts');                      // ✅ navigate after create
+    }
   };
 
   return (

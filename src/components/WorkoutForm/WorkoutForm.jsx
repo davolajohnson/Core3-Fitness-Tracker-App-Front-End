@@ -1,53 +1,61 @@
-import {useState} from 'react'
-import ExerciseForm from '../ExerciseForm/ExerciseForm'
+import { useState } from 'react';
 
-const WorkoutForm = ({handleAddWorkout}) => {}
-    const [formData, setFormData] = useState({
-        date: '',
-        notes: '',
-        duration: '',
-      });
-    const [exercises, setExercises] = useState([]);
+const WorkoutForm = ({ handleAddWorkout }) => {
+  const [formData, setFormData] = useState({
+    date: '',
+    notes: '',
+    duration: '',
+  });
 
-    const handleChange = (evt) => {
-        setFormData({ ...formData, [evt.target.name]: evt.target.value });
-    
-    const handleSubmit = (evt) => {
-        evt.preventDefault();
-        handleAddWorkout(formData)
-      };
-      const handleAddExercise = (exercise) => {
-        setExercises([...exercises, exercise]);
-      };
- 
- 
- return (
-   <main>
-    <form onSubmit={handleSubmit}>
-      <label htmlFor='date'>Date</label>  
-      <input 
-      required
-      type='date'
-      id='date'
-      value={FormData.date}
-      onChange={handleChange}
-      />
-      <label htmlFor='notes'>Notes</label>
-      <textarea
-      type='text'
-      name='notes'
-      id='notes'
-      value={formData.notes}
-      onChange={handleChange}
-      />
-      <label htmlFor='duration'>Duration (minutes)</label>
-      <input
-      id='duration'
-      type='number'
-      min='1'
-      />
-      <button type='submit'>Add</button>
-    </form>
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    handleAddWorkout(formData);
+    setFormData({ date: '', notes: '', duration: '' }); // reset form
+  };
+
+  return (
+    <main>
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label htmlFor="date">Date</label>
+          <input
+            required
+            type="date"
+            id="date"
+            name="date"
+            value={formData.date}
+            onChange={handleChange}
+          />
+        </div>
+
+        <div>
+          <label htmlFor="notes">Notes</label>
+          <textarea
+            id="notes"
+            name="notes"
+            value={formData.notes}
+            onChange={handleChange}
+          />
+        </div>
+
+        <div>
+          <label htmlFor="duration">Duration (minutes)</label>
+          <input
+            id="duration"
+            type="number"
+            name="duration"
+            min="1"
+            value={formData.duration}
+            onChange={handleChange}
+          />
+        </div>
+
+        <button type="submit">Add</button>
+      </form>
     </main>
   );
 };
