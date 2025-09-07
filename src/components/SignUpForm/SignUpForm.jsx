@@ -1,94 +1,62 @@
-import { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { signUp } from '../../services/authServices';
-import { UserContext } from '../../contexts/UserContext';
+import { useState } from "react";
 
-const SignUpForm = () => {
-  const navigate = useNavigate();
-  const { setUser } = useContext(UserContext);
-  const [message, setMessage] = useState('');
-  const [formData, setFormData] = useState({
-    username: '',
-    password: '',
-    passwordConf: '',
-  });
-
-  const { username, password, passwordConf } = formData;
+export default function SignUpForm({ setUser }) {
+  const [form, setForm] = useState({ name: "", email: "", password: "" });
 
   const handleChange = (e) => {
-    setMessage('');
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const isFormInvalid = () => {
-    return !(username && password && password === passwordConf);
-  };
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    try {
-      const newUser = await signUp({ username, password });
-      setUser(newUser);
-      navigate('/');
-    } catch (err) {
-      setMessage(err.message);
-    }
+    // Fake sign up for now:
+    setUser({ name: form.name, email: form.email });
   };
 
   return (
-    <main>
-      <h1>Sign Up</h1>
-      {message && <p role="alert">{message}</p>}
-
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="username">Username:</label>
-          <input
-            id="username"
-            type="text"
-            name="username"
-            value={username}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div>
-          <label htmlFor="password">Password:</label>
-          <input
-            id="password"
-            type="password"
-            name="password"
-            value={password}
-            onChange={handleChange}
-            required
-            minLength={8}
-          />
-        </div>
-
-        <div>
-          <label htmlFor="passwordConf">Confirm Password:</label>
-          <input
-            id="passwordConf"
-            type="password"
-            name="passwordConf"
-            value={passwordConf}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div>
-          <button type="submit" disabled={isFormInvalid()}>
-            Sign Up
-          </button>
-          <button type="button" onClick={() => navigate('/')}>
-            Cancel
-          </button>
-        </div>
-      </form>
+    <main className="main">
+      <div className="container">
+        <form className="card stack form" onSubmit={handleSubmit}>
+          <h2>Create Account</h2>
+          <div className="form-row">
+            <label htmlFor="name">Name</label>
+            <input
+              className="input"
+              type="text"
+              id="name"
+              name="name"
+              value={form.name}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="form-row">
+            <label htmlFor="email">Email</label>
+            <input
+              className="input"
+              type="email"
+              id="email"
+              name="email"
+              value={form.email}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="form-row">
+            <label htmlFor="password">Password</label>
+            <input
+              className="input"
+              type="password"
+              id="password"
+              name="password"
+              value={form.password}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <button type="submit" className="btn">Sign Up</button>
+        </form>
+      </div>
     </main>
   );
-};
-
-export default SignUpForm;
+}
