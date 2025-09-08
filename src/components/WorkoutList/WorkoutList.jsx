@@ -28,13 +28,17 @@ export default function WorkoutList({ workouts = [] }) {
             </div>
           )}
 
-          {workouts.map(workout => (
-            <Link key={workout._id} to={`${workout._id}`} className="item">
+          {workouts.map((workout, idx) => (
+            <Link key={workout._id || idx} to={`/${user._id}/workouts/${workout._id}`} className="item">
               <article>
                 <h3 style={{ margin: 0 }}>{workout.name}</h3>
                 <div className="item__meta">
-                  {new Date(workout.createdAt).toLocaleDateString()} · {workout.exercises?.length || 0} exercises
-                </div>
+                 {workout.createdAt 
+                  ? new Date(workout.createdAt).toLocaleDateString() 
+                  : "No date"} 
+                · {workout.exercises?.length || 0} exercises
+              </div>
+
               </article>
           
             </Link>

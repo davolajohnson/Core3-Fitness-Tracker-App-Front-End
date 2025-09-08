@@ -68,7 +68,7 @@ export default function App() {
           element={<WorkoutForm handleAddWorkout={handleAddWorkout} />}
         />
         <Route 
-        path="workouts/:workoutId"
+        path="/:userId/workouts/:workoutId"
         element={<WorkoutDetails />}
         />
         <Route path="/sign-in" element={<SignInForm setUser={setUser} />} />
