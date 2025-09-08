@@ -15,9 +15,10 @@ const ExerciseForm = ({handleAddExercise}) => {
 
 const handleSubmit = (evt) => {
     evt.preventDefault();
-    handleAddExercise(exercise)
+    if (exercise.name && exercise.sets && exercise.reps ) {
+      handleAddExercise(exercise)
     setExercise({ name: '', sets: '', reps: '', weight: '' }); 
-  };
+    }};
   
     return (
     <fieldset>
@@ -27,6 +28,7 @@ const handleSubmit = (evt) => {
         id='name'
         value={exercise.name}
         onChange={handleChange}
+        required
       />
       <label htmlFor='sets'>Sets:</label>
       <input
@@ -34,6 +36,7 @@ const handleSubmit = (evt) => {
         id="sets"
         value={exercise.sets}
         onChange={handleChange}
+        required
       />
       <label htmlFor='reps'>Reps:</label>
       <input
@@ -41,6 +44,7 @@ const handleSubmit = (evt) => {
         id="reps"
         value={exercise.reps}
         onChange={handleChange}
+        required
       />
       <label htmlFor='weight'>Weight:</label>
       <input
@@ -50,7 +54,7 @@ const handleSubmit = (evt) => {
         value={exercise.weight}
         onChange={handleChange}
       />
-      <button type="submit" onClick={handleSubmit}>Add Exercise</button>
+      <button type="button" onClick={handleSubmit}>Add Exercise</button>
 
     </fieldset>
   )
