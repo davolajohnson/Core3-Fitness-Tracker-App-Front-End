@@ -1,60 +1,97 @@
 import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { signUp } from "../../services/authServices";
 
-export default function SignUpForm({ setUser }) {
-  const [form, setForm] = useState({ name: "", email: "", password: "" });
+export default function SignUpForm() {
+  const nav = useNavigate();
+  const [form, setForm] = useState({ username: "", password: "", name: "" });
+  const [confirm, setConfirm] = useState("");
+  const [err, setErr] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e) => {
+  async function handleSubmit(e) {
     e.preventDefault();
-    // Fake sign up for now:
-    setUser({ name: form.name, email: form.email });
-  };
+    setErr("");
+
+    if (form.password !== confirm) {
+      setErr("Passwords do not match");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await signUp(form);        // expects { username, password, name? }
+      nav("/dashboard");         // or wherever you want to land
+    } catch (e) {
+      setErr(e.message || "Sign up failed");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <main className="main">
       <div className="container">
-        <form className="card stack form" onSubmit={handleSubmit}>
+        <form className="card stack form" onSubmit={handleSubmit} noValidate>
           <h2>Create Account</h2>
+
+          {err && <div className="pill" role="alert">⚠️ {err}</div>}
+
           <div className="form-row">
-            <label htmlFor="name">Name</label>
+            <label htmlFor="username">Username</label>
             <input
+              id="username"
               className="input"
-              type="text"
+              autoComplete="username"
+              value={form.username}
+              onChange={(e) => setForm({ ...form, username: e.target.value })}
+              required
+            />
+          </div>
+
+          <div className="form-row">
+            <label htmlFor="name">Display Name (optional)</label>
+            <input
               id="name"
-              name="name"
-              value={form.name}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="form-row">
-            <label htmlFor="email">Email</label>
-            <input
               className="input"
-              type="email"
-              id="email"
-              name="email"
-              value={form.email}
-              onChange={handleChange}
-              required
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
             />
           </div>
+
           <div className="form-row">
             <label htmlFor="password">Password</label>
             <input
+              id="password"
               className="input"
               type="password"
-              id="password"
-              name="password"
+              autoComplete="new-password"
               value={form.password}
-              onChange={handleChange}
+              onChange={(e) => setForm({ ...form, password: e.target.value })}
               required
             />
           </div>
-          <button type="submit" className="btn">Sign Up</button>
+
+          <div className="form-row">
+            <label htmlFor="confirm">Confirm Password</label>
+            <input
+              id="confirm"
+              className="input"
+              type="password"
+              autoComplete="new-password"
+              value={confirm}
+              onChange={(e) => setConfirm(e.target.value)}
+              required
+            />
+          </div>
+
+          <button className="btn" type="submit" disabled={loading}>
+            {loading ? "Creating..." : "Sign Up"}
+          </button>
+
+          <p className="mt-2">
+            Already have an account? <Link to="/sign-in">Sign in</Link>
+          </p>
         </form>
       </div>
     </main>
