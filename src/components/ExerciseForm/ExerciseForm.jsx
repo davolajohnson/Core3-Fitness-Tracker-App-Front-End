@@ -28,7 +28,7 @@ const handleSubmit = (evt) => {
         id='name'
         value={exercise.name}
         onChange={handleChange}
-        required
+
       />
       <label htmlFor='sets'>Sets:</label>
       <input
@@ -36,7 +36,6 @@ const handleSubmit = (evt) => {
         id="sets"
         value={exercise.sets}
         onChange={handleChange}
-        required
       />
       <label htmlFor='reps'>Reps:</label>
       <input
@@ -44,7 +43,6 @@ const handleSubmit = (evt) => {
         id="reps"
         value={exercise.reps}
         onChange={handleChange}
-        required
       />
       <label htmlFor='weight'>Weight:</label>
       <input

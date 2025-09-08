@@ -11,7 +11,7 @@ import SignUpForm from "./components/SignUpForm/SignUpForm";
 import Dashboard from "./components/Dashboard/Dashboard";
 
 // Example: user state could come from context or auth
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -38,15 +38,17 @@ export default function App() {
     }
   ]);
 
+  useEffect(() => {
+    const fetchAllWorkouts = async () => {
+      const workoutsData = await workoutService.index()
+      setWorkouts(workoutsData)
+    }
+    if(user) fetchAllWorkouts()    
+  }, [user])
   const handleAddWorkout = async (formData) => {
-    // Fake add for now
-    const newWorkout = {
-      _id: Date.now(),
-      name: formData.name || "Untitled Workout",
-      createdAt: new Date().toISOString(),
-      exercises: [],
-    };
-    setWorkouts([newWorkout, ...workouts]);
+    const newWorkout = await workoutService.create(formData)
+    setWorkouts([newWorkout, ...workouts])
+    navigate('/workouts')
   };
 
   return (
