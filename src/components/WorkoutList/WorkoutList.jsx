@@ -1,4 +1,10 @@
+import { Link } from 'react-router'
+import { useContext } from 'react'
+import { UserContext  } from '../../contexts/UserContext';
+ 
+
 export default function WorkoutList({ workouts = [] }) {
+  const { user } = useContext(UserContext);
 
 
   return (
@@ -7,7 +13,11 @@ export default function WorkoutList({ workouts = [] }) {
         <div className="card">
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <h2>Your Workouts</h2>
-            <a className="btn" href="/workouts/new">New Workout</a>
+            {user && (
+              <Link className="btn" to={`/${user._id}/workouts/new`}>
+                New Workout
+              </Link>
+            )}
           </div>
         </div>
 
@@ -18,16 +28,16 @@ export default function WorkoutList({ workouts = [] }) {
             </div>
           )}
 
-          {workouts.map(w => (
-            <div key={w._id} className="item">
-              <div>
-                <h3 style={{ margin: 0 }}>{w.name}</h3>
+          {workouts.map(workout => (
+            <Link key={workout._id} to={`${workout._id}`} className="item">
+              <article>
+                <h3 style={{ margin: 0 }}>{workout.name}</h3>
                 <div className="item__meta">
-                  {new Date(w.createdAt).toLocaleDateString()} · {w.exercises?.length || 0} exercises
+                  {new Date(workout.createdAt).toLocaleDateString()} · {workout.exercises?.length || 0} exercises
                 </div>
-              </div>
-              <a className="btn btn--ghost" href={`/workouts/${w._id}`}>Open</a>
-            </div>
+              </article>
+          
+            </Link>
           ))}
         </div>
       </div>

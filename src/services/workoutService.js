@@ -18,5 +18,18 @@ const create = async (formData) => {
   });
   return res.json();
 };
+const show = async (workoutId) => {
+  try {
+    const res = await fetch(`${BASE_URL}/${workoutId}`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+    });
+    return res.json();
+  } catch (error) {
+    console.log(error);
+  }
+};
 
-export { index, create };
+
+
+
+export { index, create, show };

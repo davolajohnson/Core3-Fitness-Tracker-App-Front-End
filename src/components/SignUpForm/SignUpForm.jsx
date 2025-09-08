@@ -1,62 +1,87 @@
-import { useState } from "react";
+import { useState, useContext } from 'react';
+import { useNavigate } from 'react-router';
 
-export default function SignUpForm({ setUser }) {
-  const [form, setForm] = useState({ name: "", email: "", password: "" });
+import { signUp } from '../../services/authServices';
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+import { UserContext } from '../../contexts/UserContext';
+
+const SignUpForm = () => {
+  const navigate = useNavigate();
+  const { setUser } = useContext(UserContext);
+  const [message, setMessage] = useState('');
+  const [formData, setFormData] = useState({
+    username: '',
+    password: '',
+    passwordConf: '',
+  });
+
+  const { username, password, passwordConf } = formData;
+
+  const handleChange = (evt) => {
+    setMessage('');
+    setFormData({ ...formData, [evt.target.name]: evt.target.value });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Fake sign up for now:
-    setUser({ name: form.name, email: form.email });
+  const handleSubmit = async (evt) => {
+    evt.preventDefault();
+    try {
+      const newUser = await signUp(formData);
+      setUser(newUser);
+      navigate('/');
+    } catch (err) {
+      setMessage(err.message);
+    }
+  };
+
+  const isFormInvalid = () => {
+    return !(username && password && password === passwordConf);
   };
 
   return (
-    <main className="main">
-      <div className="container">
-        <form className="card stack form" onSubmit={handleSubmit}>
-          <h2>Create Account</h2>
-          <div className="form-row">
-            <label htmlFor="name">Name</label>
-            <input
-              className="input"
-              type="text"
-              id="name"
-              name="name"
-              value={form.name}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="form-row">
-            <label htmlFor="email">Email</label>
-            <input
-              className="input"
-              type="email"
-              id="email"
-              name="email"
-              value={form.email}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="form-row">
-            <label htmlFor="password">Password</label>
-            <input
-              className="input"
-              type="password"
-              id="password"
-              name="password"
-              value={form.password}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <button type="submit" className="btn">Sign Up</button>
-        </form>
-      </div>
+    <main>
+      <h1>Sign Up</h1>
+      <p>{message}</p>
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label htmlFor='username'>Username:</label>
+          <input
+            type='text'
+            id='username'
+            value={username}
+            name='username'
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div>
+          <label htmlFor='password'>Password:</label>
+          <input
+            type='password'
+            id='password'
+            value={password}
+            name='password'
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div>
+          <label htmlFor='confirm'>Confirm Password:</label>
+          <input
+            type='password'
+            id='confirm'
+            value={passwordConf}
+            name='passwordConf'
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div>
+          <button disabled={isFormInvalid()}>Sign Up</button>
+          <button onClick={() => navigate('/')}>Cancel</button>
+        </div>
+      </form>
     </main>
   );
-}
+};
+
+export default SignUpForm;
