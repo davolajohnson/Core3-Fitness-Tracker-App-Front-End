@@ -1,63 +1,36 @@
-import { useState } from 'react';
-
-const WorkoutForm = ({ handleAddWorkout }) => {
-  const [formData, setFormData] = useState({
-    date: '',
-    notes: '',
-    duration: '',
-  });
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e) => {
+export default function WorkoutForm({ handleAddWorkout }){
+  async function onSubmit(e){
     e.preventDefault();
-    handleAddWorkout(formData);
-    setFormData({ date: '', notes: '', duration: '' }); // reset form
-  };
+    const form = new FormData(e.currentTarget);
+    const workout = {
+      name: form.get("name"),
+      notes: form.get("notes")
+    };
+    await handleAddWorkout(workout);
+  }
 
   return (
-    <main>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="date">Date</label>
-          <input
-            required
-            type="date"
-            id="date"
-            name="date"
-            value={formData.date}
-            onChange={handleChange}
-          />
-        </div>
+    <main className="main">
+      <div className="container">
+        <form className="card stack" style={{"--gap":"1rem"}} onSubmit={onSubmit}>
+          <h2>Create Workout</h2>
 
-        <div>
-          <label htmlFor="notes">Notes</label>
-          <textarea
-            id="notes"
-            name="notes"
-            value={formData.notes}
-            onChange={handleChange}
-          />
-        </div>
+          <div className="form-row">
+            <label htmlFor="name">Workout Name</label>
+            <input id="name" name="name" className="input" placeholder="e.g., Push Day" required />
+          </div>
 
-        <div>
-          <label htmlFor="duration">Duration (minutes)</label>
-          <input
-            id="duration"
-            type="number"
-            name="duration"
-            min="1"
-            value={formData.duration}
-            onChange={handleChange}
-          />
-        </div>
+          <div className="form-row">
+            <label htmlFor="notes">Notes</label>
+            <textarea id="notes" name="notes" className="textarea" rows="4" placeholder="Optional…"></textarea>
+          </div>
 
-        <button type="submit">Add</button>
-      </form>
+          <div style={{display:"flex", gap:".6rem"}}>
+            <button className="btn" type="submit">Save Workout</button>
+            <a className="btn btn--ghost" href="/workouts">Cancel</a>
+          </div>
+        </form>
+      </div>
     </main>
   );
-};
-
-export default WorkoutForm;
+}

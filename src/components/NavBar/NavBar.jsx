@@ -1,35 +1,32 @@
-import { useContext } from 'react';
-import { Link } from 'react-router-dom';
-import { UserContext } from '../../contexts/UserContext';
+import { Link } from "react-router-dom";
+import logo from "../../assets/core3-logo.svg";
 
-const NavBar = () => {
-  const { user, setUser } = useContext(UserContext);
-
-  const handleSignOut = () => {
-    localStorage.removeItem('token');
-    setUser(null);
-  };
-
+export default function NavBar({ user }) {
   return (
-    <nav>
-      {user ? (
-        <ul>
-          <li>Welcome, {user.username}</li>
-          <li><Link to="/">Dashboard</Link></li>
-          <li><Link to="/workouts/new">New Workout</Link></li>
-          <li><button onClick={handleSignOut}>Sign Out</button></li>
-        </ul>
-      ) : (
-        <ul>
-          <li><Link to="/">Home</Link></li>
-          <li><Link to="/workouts/new">New Workout</Link></li>
-          <li><Link to="/workouts">All Workouts</Link></li>
-          <li><Link to="/sign-in">Sign In</Link></li>
-          <li><Link to="/sign-up">Sign Up</Link></li>
-        </ul>
-      )}
-    </nav>
-  );
-};
+    <header className="nav">
+      <div className="container nav__bar">
+        {/* Brand */}
+        <Link to="/" className="brand" aria-label="Core3 Home">
+          <img src={logo} alt="Core3 logo" className="logo" />
+          <span className="brand__name">Core3</span>
+        </Link>
 
-export default NavBar;
+        {/* Navigation Links */}
+        <nav className="nav__links">
+          <Link to="/workouts" className="nav__link">All Workouts</Link>
+          <Link to="/workouts/new" className="btn hide-on-mobile">New Workout</Link>
+
+          {!user ? (
+            <>
+              <Link to="/sign-in" className="nav__link">Sign In</Link>
+              <Link to="/sign-up" className="btn">Sign Up</Link>
+            </>
+          ) : (
+            <Link to="/dashboard" className="btn btn--ghost">Dashboard</Link>
+          )}
+        </nav>
+      </div>
+    </header>
+  );
+}
+
