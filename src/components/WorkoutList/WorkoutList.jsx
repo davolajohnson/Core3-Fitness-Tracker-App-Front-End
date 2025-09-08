@@ -1,4 +1,6 @@
 export default function WorkoutList({ workouts = [] }) {
+
+
   return (
     <main className="main">
       <div className="container stack" style={{ "--gap": "1.25rem" }}>
