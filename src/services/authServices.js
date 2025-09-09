@@ -1,5 +1,5 @@
 // src/services/authServices.js
-const BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:3001";
+const BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
 // token helpers
 export function getToken() {
