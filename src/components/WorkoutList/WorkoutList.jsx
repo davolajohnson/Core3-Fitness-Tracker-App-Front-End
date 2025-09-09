@@ -41,7 +41,6 @@ export default function WorkoutList({ workouts = [] }) {
           
             </Link>
           ))}
-          {!items.length && !err && <div className="card">No workouts yet.</div>}
         </div>
       </div>
     </main>
