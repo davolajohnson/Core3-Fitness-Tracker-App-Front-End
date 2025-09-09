@@ -1,4 +1,5 @@
-const BASE_URL = `${import.meta.env.VITE_BACK_END_SERVER_URL}/auth`;
+// src/services/authServices.js
+const BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:3001";
 
 const signUp = async (formData) => {
   try {
