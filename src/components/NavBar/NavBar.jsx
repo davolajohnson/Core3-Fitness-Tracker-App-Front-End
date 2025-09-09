@@ -1,18 +1,23 @@
-// src/components/NavBar/NavBar.jsx
 import { Link } from "react-router-dom";
 import { useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import logo from "../../assets/core3-logo.svg";
 
 export default function NavBar() {
-  const { user } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
+
+  const handleSignOut = () => {
+    localStorage.removeItem("token");
+    setUser(null);
+  };
 
   return (
     <header className="nav">
       <div className="container nav__bar">
+        {/* Brand */}
         <Link to="/" className="brand" aria-label="Core3 Home">
-          <img src={logo} alt="Core3 logo" style={{ width: 28, height: 28 }} />
-          <span style={{ marginLeft: ".6rem", fontWeight: 800 }}>Core3</span>
+          <img src={logo} alt="Core3 logo" className="logo" />
+          <span className="brand__name">Core3</span>
         </Link>
 
         <nav>
