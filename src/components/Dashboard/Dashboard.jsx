@@ -1,7 +1,7 @@
 // src/components/Dashboard/Dashboard.jsx
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { listWorkouts } from "../../services/workoutServices";
+import {index as listWorkouts } from "../../services/workoutService";
 
 export default function Dashboard({ user }) {
   const name = user?.name || user?.username || "Athlete";
