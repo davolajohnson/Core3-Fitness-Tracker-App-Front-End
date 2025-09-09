@@ -1,14 +1,13 @@
 import { Link } from "react-router-dom";
-import { useContext } from 'react';
-import { UserContext } from '../../contexts/UserContext';
+import { useContext } from "react";
+import { UserContext } from "../../contexts/UserContext";
 import logo from "../../assets/core3-logo.svg";
 
 export default function NavBar() {
-
   const { user, setUser } = useContext(UserContext);
 
   const handleSignOut = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem("token");
     setUser(null);
   };
 
@@ -23,24 +22,37 @@ export default function NavBar() {
 
         {/* Navigation Links */}
         <nav className="nav__links">
-        {user ? (
-        <ul>
-          <li>Welcome, {user.username}</li>
-          <li><Link to={`/${user._id}/workouts`}>Dashboard</Link></li>
-          <li><Link to={`/${user._id}/workouts/new`}>New Workout</Link></li>
-          <li><Link to='/' onClick={handleSignOut}>Sign Out</Link></li>
-        </ul>
-      ) : (
-        <ul>
-          <li><Link to='/'>Home</Link></li>
-          <li><Link to='/sign-in'>Sign In</Link></li>
-          <li><Link to='/sign-up'>Sign Up</Link></li>
-        </ul>
-      )}
-    </nav>
-        
+          {user ? (
+            <>
+              <span className="nav__link">Welcome, {user.username}</span>
+              <Link to={`/${user._id}/workouts`} className="btn btn--ghost">
+                Dashboard
+              </Link>
+              <Link
+                to={`/${user._id}/workouts/new`}
+                className="btn hide-on-mobile"
+              >
+                New Workout
+              </Link>
+              <Link to="/" onClick={handleSignOut} className="nav__link">
+                Sign Out
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link to="/" className="nav__link">
+                Home
+              </Link>
+              <Link to="/sign-in" className="nav__link">
+                Sign In
+              </Link>
+              <Link to="/sign-up" className="btn">
+                Sign Up
+              </Link>
+            </>
+          )}
+        </nav>
       </div>
     </header>
   );
 }
-
