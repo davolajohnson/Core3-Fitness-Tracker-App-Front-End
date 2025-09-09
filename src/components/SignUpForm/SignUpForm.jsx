@@ -25,7 +25,7 @@ export default function SignUpForm() {
     try {
       const newUser = await signUp(form); // expects { username, password, name? }
       setUser(newUser);                   // update context immediately
-      nav("/");                           // redirect to landing (or dashboard if you prefer)
+      nav("/dashboard");                          
     } catch (e) {
       setErr(e.message || "Sign up failed");
     } finally {
