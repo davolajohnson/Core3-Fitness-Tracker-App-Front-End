@@ -17,7 +17,7 @@ export default function NavBar() {
 
         <nav>
           <ul className="nav__links">
-            <li><Link to="/workouts">All Workouts</Link></li>
+            {/* <li><Link to="/workouts">All Workouts</Link></li> */}
             {user ? (
               <>
                 <li><Link to="/workouts/new">New Workout</Link></li>
