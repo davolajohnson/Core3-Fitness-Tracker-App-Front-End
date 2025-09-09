@@ -1,32 +1,39 @@
-export default function WorkoutList({ workouts = [] }) {
+import { useEffect, useState } from "react";
+import { listWorkouts } from "../../services/workoutServices";
+
+export default function WorkoutList() {
+  const [items, setItems] = useState([]);
+  const [err, setErr] = useState("");
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const data = await listWorkouts();
+        setItems(data);
+      } catch (e) {
+        setErr(e.message || "Failed to load workouts");
+      }
+    })();
+  }, []);
+
   return (
     <main className="main">
-      <div className="container stack" style={{ "--gap": "1.25rem" }}>
-        <div className="card">
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <h2>Your Workouts</h2>
-            <a className="btn" href="/workouts/new">New Workout</a>
-          </div>
-        </div>
-
+      <div className="container">
+        <h2 className="mb-2">All Workouts</h2>
+        {err && <div className="pill">⚠️ {err}</div>}
         <div className="list">
-          {workouts.length === 0 && (
-            <div className="card">
-              <p>No workouts yet. Click <strong>New Workout</strong> to add your first session.</p>
-            </div>
-          )}
-
-          {workouts.map(w => (
+          {items.map(w => (
             <div key={w._id} className="item">
               <div>
-                <h3 style={{ margin: 0 }}>{w.name}</h3>
+                <strong>{w.name}</strong>
                 <div className="item__meta">
-                  {new Date(w.createdAt).toLocaleDateString()} · {w.exercises?.length || 0} exercises
+                  {new Date(w.createdAt).toLocaleString()}
                 </div>
               </div>
-              <a className="btn btn--ghost" href={`/workouts/${w._id}`}>Open</a>
+              <div className="item__meta">{w.notes}</div>
             </div>
           ))}
+          {!items.length && !err && <div className="card">No workouts yet.</div>}
         </div>
       </div>
     </main>

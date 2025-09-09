@@ -1,11 +1,13 @@
-// src/components/WorkoutForm/WorkoutForm.jsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createWorkout } from "../../services/workoutServices";
 
 export default function WorkoutForm({ onCreated }) {
   const nav = useNavigate();
-  const [form, setForm] = useState({ name: "", notes: "" });
+  const [form, setForm] = useState({
+    name: "",
+    notes: "",
+  });
   const [err, setErr] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -14,14 +16,11 @@ export default function WorkoutForm({ onCreated }) {
     setErr("");
     setLoading(true);
     try {
-      const newWorkout = await createWorkout({
-        name: form.name,
-        notes: form.notes,
-      });
-      if (onCreated) onCreated(newWorkout);
+      const created = await createWorkout(form); // <-- API call
+      onCreated?.(created);
       nav("/workouts");
     } catch (e) {
-      setErr(e.message || "Could not create workout");
+      setErr(e.message || "Failed to create workout");
     } finally {
       setLoading(false);
     }
@@ -30,23 +29,17 @@ export default function WorkoutForm({ onCreated }) {
   return (
     <main className="main">
       <div className="container">
-        <form className="card stack form" onSubmit={handleSubmit} noValidate>
+        <form className="card stack form" onSubmit={handleSubmit}>
           <h2>New Workout</h2>
-
-          {err && (
-            <div className="pill" role="alert">
-              ⚠️ {err}
-            </div>
-          )}
+          {err && <div className="pill">⚠️ {err}</div>}
 
           <div className="form-row">
-            <label htmlFor="name">Workout Name</label>
+            <label htmlFor="name">Name</label>
             <input
               id="name"
               className="input"
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
-              placeholder="e.g., Push Day, Leg Day"
               required
             />
           </div>
@@ -56,14 +49,13 @@ export default function WorkoutForm({ onCreated }) {
             <textarea
               id="notes"
               className="input"
-              rows={4}
+              rows={3}
               value={form.notes}
               onChange={(e) => setForm({ ...form, notes: e.target.value })}
-              placeholder="Optional notes…"
             />
           </div>
 
-          <button className="btn" type="submit" disabled={loading}>
+          <button className="btn" disabled={loading}>
             {loading ? "Saving..." : "Create Workout"}
           </button>
         </form>
