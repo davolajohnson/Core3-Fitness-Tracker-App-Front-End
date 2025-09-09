@@ -56,5 +56,4 @@ const deleteWorkout = async (workoutId) => {
 
 
 
-
-export { index, create, show, deleteWorkout };
+export { index, create, show, deleteWorkout};
