@@ -20,22 +20,37 @@ export default function NavBar() {
           <span className="brand__name">Core3</span>
         </Link>
 
-        <nav>
-          <ul className="nav__links">
-            {/* <li><Link to="/workouts">All Workouts</Link></li> */}
-            {user ? (
-              <>
-                <li><Link to="/workouts/new">New Workout</Link></li>
-                <li><Link to="/dashboard">Dashboard</Link></li>
-                <li><Link to="/sign-out">Sign Out</Link></li>
-              </>
-            ) : (
-              <>
-                <li><Link to="/sign-in">Sign In</Link></li>
-                <li><Link to="/sign-up" className="btn">Sign Up</Link></li>
-              </>
-            )}
-          </ul>
+        {/* Navigation Links */}
+        <nav className="nav__links">
+          {user ? (
+            <>
+              <span className="nav__link">Welcome, {user.username}</span>
+              <Link to={`/${user._id}/workouts`} className="btn btn--ghost">
+                Dashboard
+              </Link>
+              <Link
+                to={`/${user._id}/workouts/new`}
+                className="btn hide-on-mobile"
+              >
+                New Workout
+              </Link>
+              <Link to="/" onClick={handleSignOut} className="nav__link">
+                Sign Out
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link to="/" className="nav__link">
+                Home
+              </Link>
+              <Link to="/sign-in" className="nav__link">
+                Sign In
+              </Link>
+              <Link to="/sign-up" className="btn">
+                Sign Up
+              </Link>
+            </>
+          )}
         </nav>
       </div>
     </header>
