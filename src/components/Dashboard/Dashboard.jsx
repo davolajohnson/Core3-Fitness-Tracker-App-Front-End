@@ -1,18 +1,35 @@
 // src/components/Dashboard/Dashboard.jsx
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { listWorkouts } from "../../services/workoutServices";
+
 export default function Dashboard({ user }) {
-  const name = user?.name || "Athlete";
+  const name = user?.name || user?.username || "Athlete";
+
+  const [recent, setRecent] = useState([]);
+  const [err, setErr] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    (async () => {
+      setLoading(true);
+      setErr("");
+      try {
+        const data = await listWorkouts();     // already sorted newest -> oldest
+        setRecent(data.slice(0, 3));           // show top 3
+      } catch (e) {
+        setErr(e.message || "Failed to load recent workouts");
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
 
   const stats = [
     { label: "Current Streak", value: "4 days 🔥" },
     { label: "Workouts (7d)", value: "5 sessions" },
     { label: "Total Volume (7d)", value: "24,300 lbs" },
     { label: "Avg. Duration", value: "38 min" },
-  ];
-
-  const recent = [
-    { id: 1, name: "Push Day", when: "Today · 42m · 6 exercises" },
-    { id: 2, name: "Leg Day", when: "Tue · 55m · 5 exercises" },
-    { id: 3, name: "Pull Day", when: "Sun · 40m · 5 exercises" },
   ];
 
   return (
@@ -22,8 +39,8 @@ export default function Dashboard({ user }) {
           <h2 style={{ marginBottom: ".25rem" }}>Welcome back, {name} 👋</h2>
           <p className="item__meta">Here’s your snapshot and recent activity.</p>
           <div className="mt-2" style={{ display: "flex", gap: ".6rem", flexWrap: "wrap" }}>
-            <a className="btn" href="/workouts/new">Start New Workout</a>
-            <a className="btn btn--ghost" href="/workouts">View All Workouts</a>
+            <Link className="btn" to="/workouts/new">Start New Workout</Link>
+            <Link className="btn btn--ghost" to="/workouts">View All Workouts</Link>
           </div>
         </div>
 
@@ -39,20 +56,37 @@ export default function Dashboard({ user }) {
         <section className="card">
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "1rem" }}>
             <h2 style={{ margin: 0 }}>Recent Workouts</h2>
-            <a className="btn btn--ghost" href="/workouts">See All</a>
+            <Link className="btn btn--ghost" to="/workouts">See All</Link>
           </div>
 
-          <div className="list mt-2">
-            {recent.map(r => (
-              <div key={r.id} className="item">
-                <div>
-                  <h3 style={{ margin: 0 }}>{r.name}</h3>
-                  <div className="item__meta">{r.when}</div>
+          {loading && <div className="mt-2 item__meta">Loading…</div>}
+          {err && <div className="pill mt-2">⚠️ {err}</div>}
+
+          {!loading && !err && (
+            <div className="list mt-2">
+              {recent.length === 0 ? (
+                <div className="item">
+                  <div>
+                    <h3 style={{ margin: 0 }}>No recent workouts</h3>
+                    <div className="item__meta">Create your first workout to see it here.</div>
+                  </div>
+                  <Link className="btn" to="/workouts/new">Start</Link>
                 </div>
-                <a className="btn btn--ghost" href={`/workouts/${r.id}`}>Open</a>
-              </div>
-            ))}
-          </div>
+              ) : (
+                recent.map((r) => (
+                  <div key={r._id} className="item">
+                    <div>
+                      <h3 style={{ margin: 0 }}>{r.name}</h3>
+                      <div className="item__meta">
+                        {new Date(r.createdAt).toLocaleString()}
+                      </div>
+                    </div>
+                    <Link className="btn btn--ghost" to={`/workouts/${r._id}`}>Open</Link>
+                  </div>
+                ))
+              )}
+            </div>
+          )}
         </section>
       </div>
     </main>

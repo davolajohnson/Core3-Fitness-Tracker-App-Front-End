@@ -1,65 +1,66 @@
+// src/App.jsx
 import "./App.css";
-import { Routes, Route, useNavigate } from "react-router-dom";
-import { useEffect, useState, useContext } from "react";
-import { UserContext } from "./contexts/UserContext";
+import { Routes, Route } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 import NavBar from "./components/NavBar/NavBar";
 import Landing from "./components/Landing/Landing";
 import WorkoutList from "./components/WorkoutList/WorkoutList";
-import WorkoutDetails from "./components/WorkoutDetails/WorkoutDetails";
 import WorkoutForm from "./components/WorkoutForm/WorkoutForm";
 import SignInForm from "./components/SignInForm/SignInForm";
 import SignUpForm from "./components/SignUpForm/SignUpForm";
 import Dashboard from "./components/Dashboard/Dashboard";
+import WorkoutDetail from "./components/WorkoutDetail/WorkoutDetail";
+import SignOut from "./components/Auth/SignOut";
 
-import * as workoutService from "./services/workoutService";
+import { useAuth } from "./context/AuthContext";
+import { listWorkouts } from "./services/workoutServices";
 
 export default function App() {
-  const navigate = useNavigate();
-  const { user, setUser } = useContext(UserContext);
+  const { user, hydrating } = useAuth();
   const [workouts, setWorkouts] = useState([]);
 
-  // Load workouts if user exists
   useEffect(() => {
-    const fetchAllWorkouts = async () => {
-      if (!user) return;
-      const workoutsData = await workoutService.index();
-      setWorkouts(workoutsData);
-    };
-    fetchAllWorkouts();
+    (async () => {
+      if (!user) {
+        setWorkouts([]);
+        return;
+      }
+      try {
+        const data = await listWorkouts();
+        setWorkouts(data);
+      } catch (e) {
+        console.error("Failed to load workouts:", e);
+      }
+    })();
   }, [user]);
 
-  const handleAddWorkout = async (formData) => {
-    if (!user) return;
-    const newWorkout = await workoutService.create(formData);
-    setWorkouts([newWorkout, ...workouts]);
-    navigate(`/${user._id}/workouts`);
+  const handleCreated = (createdFromApi) => {
+    setWorkouts((ws) => [createdFromApi, ...ws]);
   };
 
-  const handleDeleteWorkout = async (workoutId) => {
-    try {
-      await workoutService.deleteWorkout(workoutId);
-      setWorkouts(workouts.filter((w) => w._id !== workoutId));
-      navigate(`/${user?._id || ""}/workouts`);
-    } catch (err) {
-      console.error("Failed to delete workout:", err);
-    }
+  const handleDeleted = (id) => {
+    setWorkouts((ws) => ws.filter((w) => w._id !== id));
   };
+
+  if (hydrating) return <p>Loading...</p>;
 
   return (
     <div className="app-shell">
       <NavBar />
-
       <Routes>
         <Route path="/" element={<Landing />} />
-        <Route path="/:userId/workouts" element={<WorkoutList workouts={workouts} />} />
-        <Route path="/:userId/workouts/new" element={<WorkoutForm handleAddWorkout={handleAddWorkout} />} />
-        <Route path="/:userId/workouts/:workoutId" element={<WorkoutDetails handleDeleteWorkout={handleDeleteWorkout} />} />
+        <Route
+          path="/workouts"
+          element={<WorkoutList workouts={workouts} onDeleted={handleDeleted} />}
+        />
+        <Route path="/workouts/new" element={<WorkoutForm onCreated={handleCreated} />} />
+        <Route path="/workouts/:id" element={<WorkoutDetail />} />
         <Route path="/sign-in" element={<SignInForm />} />
         <Route path="/sign-up" element={<SignUpForm />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/sign-out" element={<SignOut />} />
+        <Route path="/dashboard" element={<Dashboard user={user} />} />
       </Routes>
-
       <footer className="footer">
         <div className="container footer__brand">
           <span className="footer__logoText">Core3</span>
