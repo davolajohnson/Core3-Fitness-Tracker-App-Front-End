@@ -1,8 +1,11 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState,useContext } from "react";
+import { UserContext } from "../../contexts/UserContext";
+import { Link, Route, Routes, useNavigate } from "react-router-dom";
 import ExerciseForm from "../ExerciseForm/ExerciseForm";
 
-export default function WorkoutForm({ handleAddWorkout, user }) {
+export default function WorkoutForm({ handleAddWorkout}) {
+  const { user, setUser } = useContext(UserContext);
+
   const nav = useNavigate();
 
   const [form, setForm] = useState({
@@ -37,12 +40,7 @@ export default function WorkoutForm({ handleAddWorkout, user }) {
     setLoading(true);
 
     try {
-      const workout = {
-        ...form,
-        exercises,
-        date: new Date(form.date).getTime(),
-        duration: Number(form.duration),
-      };
+      const workout = { ...form, exercises, date: new Date(form.date).getTime(), duration: Number(form.duration) };
       await handleAddWorkout(workout);
       nav(`/${user._id}/workouts`);
     } catch (error) {
@@ -131,11 +129,11 @@ export default function WorkoutForm({ handleAddWorkout, user }) {
               {loading ? "Saving..." : "Save Workout"}
             </button>
             <Link
-              className="btn btn--ghost"
-              to={user ? `/${user._id}/workouts` : "/"}
+            className="btn btn--ghost"
+            to={user ? `/${user._id}/workouts` : "/sign-in"}
             >
               Cancel
-            </Link>
+            </Link> 
           </div>
         </form>
       </div>

@@ -6,7 +6,9 @@ import * as workoutService from '../../services/workoutService'
 
 export default function WorkoutList({ workouts = [] }) {
   const { user } = useContext(UserContext);
- 
+  if (!user) return <p>Please sign in to see your workouts.</p>;
+  // or: return <Navigate to="/sign-in" /> to redirect automatically
+
   return (
     <main className="main">
       <div className="container stack" style={{ "--gap": "1.25rem" }}>
