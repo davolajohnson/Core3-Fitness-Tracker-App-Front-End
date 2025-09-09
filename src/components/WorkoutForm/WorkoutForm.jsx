@@ -4,18 +4,7 @@ import { Link } from 'react-router'
 
 
 export default function WorkoutForm({ handleAddWorkout }){
-  async function onSubmit(e){
-    e.preventDefault();
-    const form = new FormData(e.currentTarget);
-    const workout = {
-      name: form.get("name"),
-      date: form.get('date'),
-      notes: form.get("notes"),
-      duration: form.get('duration'),
-      exercises
-    };
-    await handleAddWorkout(workout);
-  }
+ 
   const [exercises, setExercises] = useState([])
  
  
@@ -28,7 +17,19 @@ export default function WorkoutForm({ handleAddWorkout }){
     };
     setExercises([...exercises, newExercise]);
   };
-
+  
+  async function onSubmit(e){
+    e.preventDefault();
+    const form = new FormData(e.currentTarget);
+    const workout = {
+      name: form.get("name"),
+      date: form.get('date'),
+      notes: form.get("notes"),
+      duration: form.get('duration'),
+      exercises
+    };
+    await handleAddWorkout(workout);
+  }
 
   return (
     <main className="main">

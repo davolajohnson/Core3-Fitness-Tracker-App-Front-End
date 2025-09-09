@@ -16,6 +16,10 @@ const create = async (formData) => {
     },
     body: JSON.stringify(formData),
   });
+  if (!res.ok) {
+    const error = await res.text(); // see backend error
+    throw new Error(error);
+  }
   return res.json();
 };
 const show = async (workoutId) => {

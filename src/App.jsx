@@ -28,6 +28,8 @@ export default function App() {
     }
     if(user) fetchAllWorkouts()    
   }, [user])
+ 
+ 
   const handleAddWorkout = async (formData) => {
     const newWorkout = await workoutService.create(formData)
     setWorkouts([newWorkout, ...workouts])
