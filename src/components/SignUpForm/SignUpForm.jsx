@@ -86,7 +86,7 @@ export default function SignUpForm() {
               value={confirm}
               onChange={(e) => setConfirm(e.target.value)}
               required
-            />z
+            />
           </div>
 
           <button className="btn" type="submit" disabled={loading}>
