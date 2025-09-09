@@ -19,26 +19,6 @@ export default function App() {
   const navigate = useNavigate()
   const [user, setUser] = useState(null);
   const [workouts, setWorkouts] = useState([
-    {
-      _id: 1,
-      name: "Push Day",
-      notes: "Focus on chest and triceps",
-      exercises: [
-        { name: "Bench Press", sets: 4, reps: 8, weight: 185 },
-        { name: "Overhead Press", sets: 3, reps: 10, weight: 95 },
-        { name: "Tricep Dips", sets: 3, reps: 12 }
-      ]
-    },
-    {
-      _id: 2,
-      name: "Leg Day",
-      notes: "Heavy compound lifts",
-      exercises: [
-        { name: "Squat", sets: 5, reps: 5, weight: 225 },
-        { name: "Lunges", sets: 3, reps: 12, weight: 50 },
-        { name: "Calf Raises", sets: 4, reps: 20 }
-      ]
-    }
   ]);
 
   useEffect(() => {

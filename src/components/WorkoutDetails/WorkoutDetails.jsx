@@ -18,7 +18,18 @@ const WorkoutDetails = () => {
       console.log('workout state:', workout);
 
   return (
-    <div></div>
+    <div>
+    {workout ? (
+      <div>
+        <h2>{new Date(workout.date).toLocaleDateString()}</h2>
+        <p>Notes: {workout.notes}</p>
+        <p>Duration: {workout.duration} minutes</p>
+        <p>Exercises: {workout.exercises?.length || 0}</p>
+      </div>
+    ) : (
+      <p>Loading workout...</p>
+    )}
+  </div>
   )
 }
 
