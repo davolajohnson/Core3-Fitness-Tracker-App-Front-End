@@ -33,7 +33,7 @@ export default function App() {
   const handleAddWorkout = async (formData) => {
     const newWorkout = await workoutService.create(formData)
     setWorkouts([newWorkout, ...workouts])
-    navigate(`/${workoutService._id}/workouts`)
+    navigate(`/${user._id}/workouts`)
   };
 
   return (
@@ -47,7 +47,7 @@ export default function App() {
         <Route path="/:userId/workouts" element={<WorkoutList workouts={workouts} />} />
         <Route
           path="/:userId/workouts/new"
-          element={<WorkoutForm handleAddWorkout={handleAddWorkout} />}
+          element={<WorkoutForm handleAddWorkout={handleAddWorkout} user={user} />}
         />
         <Route 
         path="/:userId/workouts/:workoutId"

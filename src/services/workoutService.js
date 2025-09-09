@@ -33,7 +33,28 @@ const show = async (workoutId) => {
   }
 };
 
+const deleteWorkout = async (workoutId) => {
+  try {
+    const res = await fetch(`${BASE_URL}/${workoutId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+
+    if (!res.ok) {
+      const text = await res.text(); // read backend error message
+      throw new Error(text || "Failed to delete workout");
+    }
+
+    return true; // success
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
 
 
 
-export { index, create, show };
+
+export { index, create, show, deleteWorkout };

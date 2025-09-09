@@ -1,12 +1,12 @@
-import { Link } from 'react-router'
-import { useContext } from 'react'
+import { Link, useParams } from 'react-router'
+import { useContext, useState, useEffect } from 'react'
 import { UserContext  } from '../../contexts/UserContext';
+import * as workoutService from '../../services/workoutService'
  
 
 export default function WorkoutList({ workouts = [] }) {
   const { user } = useContext(UserContext);
-
-
+ 
   return (
     <main className="main">
       <div className="container stack" style={{ "--gap": "1.25rem" }}>

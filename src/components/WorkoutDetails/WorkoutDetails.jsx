@@ -1,11 +1,13 @@
-import {useState, useEffect} from 'react'
+import {useState, useEffect, useContext} from 'react'
 import { useParams } from 'react-router'
 import * as workoutService from '../../services/workoutService'
-
-const WorkoutDetails = () => {
+import { UserContext } from '../../contexts/UserContext'
+const WorkoutDetails = ({handleDeleteWorkout}) => {
     const { workoutId } = useParams();
+    
     console.log('workoutId', workoutId)
     const [workout, setWorkout] = useState(null)
+    const { user } = useContext(UserContext);
     useEffect(() => {
         const fetchWorkout = async () => {
           const workoutData = await workoutService.show(workoutId);
@@ -25,6 +27,7 @@ const WorkoutDetails = () => {
         <p>Notes: {workout.notes}</p>
         <p>Duration: {workout.duration} minutes</p>
         <p>Exercises: {workout.exercises?.length || 0}</p>
+        <button onClick={() => handleDeleteWorkout(workout._id)}>Delete Workout</button>
       </div>
     ) : (
       <p>Loading workout...</p>

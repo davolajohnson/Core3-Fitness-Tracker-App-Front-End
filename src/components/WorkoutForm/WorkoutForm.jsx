@@ -3,7 +3,7 @@ import {useState} from 'react'
 import { Link } from 'react-router'
 
 
-export default function WorkoutForm({ handleAddWorkout }){
+export default function WorkoutForm({ handleAddWorkout,user }){
  
   const [exercises, setExercises] = useState([])
  
@@ -19,11 +19,12 @@ export default function WorkoutForm({ handleAddWorkout }){
   };
   
   async function onSubmit(e){
+    if(!user)return
     e.preventDefault();
     const form = new FormData(e.currentTarget);
     const workout = {
       name: form.get("name"),
-      date: form.get('date'),
+      date: Number(form.get('date')),
       notes: form.get("notes"),
       duration: form.get('duration'),
       exercises
@@ -91,7 +92,7 @@ export default function WorkoutForm({ handleAddWorkout }){
   )}
           <div style={{display:"flex", gap:".6rem"}}>
             <button className="btn" type="submit">Save Workout</button>
-            <Link className="btn btn--ghost" to='/:userId/workouts'>
+            <Link className="btn btn--ghost" to={user ? `/${user._id}/workouts` : '/'}>
               Cancel
             </Link>
           </div>
