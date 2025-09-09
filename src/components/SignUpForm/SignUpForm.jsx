@@ -1,9 +1,12 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { signUp } from "../../services/authServices";
+import { UserContext } from "../../contexts/UserContext";
 
 export default function SignUpForm() {
   const nav = useNavigate();
+  const { setUser } = useContext(UserContext);
+
   const [form, setForm] = useState({ username: "", password: "", name: "" });
   const [confirm, setConfirm] = useState("");
   const [err, setErr] = useState("");
@@ -20,8 +23,9 @@ export default function SignUpForm() {
 
     setLoading(true);
     try {
-      await signUp(form);        // expects { username, password, name? }
-      nav("/dashboard");         // or wherever you want to land
+      const newUser = await signUp(form); // expects { username, password, name? }
+      setUser(newUser);                   // update context immediately
+      nav("/dashboard");                          
     } catch (e) {
       setErr(e.message || "Sign up failed");
     } finally {

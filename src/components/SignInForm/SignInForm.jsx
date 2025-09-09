@@ -1,9 +1,12 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { signIn } from "../../services/authServices";
+import { UserContext } from "../../contexts/UserContext";
 
 export default function SignInForm() {
   const nav = useNavigate();
+  const { setUser } = useContext(UserContext);
+
   const [form, setForm] = useState({ username: "", password: "" });
   const [err, setErr] = useState("");
   const [loading, setLoading] = useState(false);
@@ -13,8 +16,9 @@ export default function SignInForm() {
     setErr("");
     setLoading(true);
     try {
-      await signIn(form);         // expects { username, password }
-      nav("/dashboard");          // or wherever you want to land
+      const signedInUser = await signIn(form); // expects { username, password }
+      setUser(signedInUser);                  // update context immediately
+      nav(`/${signedInUser._id}/workouts`);   // redirect to user-specific dashboard
     } catch (e) {
       setErr(e.message || "Sign in failed");
     } finally {

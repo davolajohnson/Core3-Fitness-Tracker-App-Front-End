@@ -1,31 +1,39 @@
 import "./App.css";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 
 // Components
 import NavBar from "./components/NavBar/NavBar";
 import Landing from "./components/Landing/Landing";
 import WorkoutList from "./components/WorkoutList/WorkoutList";
+import WorkoutDetails from "./components/WorkoutDetails/WorkoutDetails"
 import WorkoutForm from "./components/WorkoutForm/WorkoutForm";
 import SignInForm from "./components/SignInForm/SignInForm";
 import SignUpForm from "./components/SignUpForm/SignUpForm";
 import Dashboard from "./components/Dashboard/Dashboard";
+import * as workoutService from './services/workoutService'
 
 // Example: user state could come from context or auth
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function App() {
+  const navigate = useNavigate()
   const [user, setUser] = useState(null);
-  const [workouts, setWorkouts] = useState([]);
+  const [workouts, setWorkouts] = useState([
+  ]);
 
+  useEffect(() => {
+    const fetchAllWorkouts = async () => {
+      const workoutsData = await workoutService.index()
+      setWorkouts(workoutsData)
+    }
+    if(user) fetchAllWorkouts()    
+  }, [user])
+ 
+ 
   const handleAddWorkout = async (formData) => {
-    // Fake add for now
-    const newWorkout = {
-      _id: Date.now(),
-      name: formData.name || "Untitled Workout",
-      createdAt: new Date().toISOString(),
-      exercises: [],
-    };
-    setWorkouts([newWorkout, ...workouts]);
+    const newWorkout = await workoutService.create(formData)
+    setWorkouts([newWorkout, ...workouts])
+    navigate(`/${user._id}/workouts`)
   };
 
   return (
@@ -36,10 +44,14 @@ export default function App() {
       {/* Routes */}
       <Routes>
         <Route path="/" element={<Landing />} />
-        <Route path="/workouts" element={<WorkoutList workouts={workouts} />} />
+        <Route path="/:userId/workouts" element={<WorkoutList workouts={workouts} />} />
         <Route
-          path="/workouts/new"
-          element={<WorkoutForm handleAddWorkout={handleAddWorkout} />}
+          path="/:userId/workouts/new"
+          element={<WorkoutForm handleAddWorkout={handleAddWorkout} user={user} />}
+        />
+        <Route 
+        path="/:userId/workouts/:workoutId"
+        element={<WorkoutDetails />}
         />
         <Route path="/sign-in" element={<SignInForm setUser={setUser} />} />
         <Route path="/sign-up" element={<SignUpForm setUser={setUser} />} />

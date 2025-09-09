@@ -3,7 +3,7 @@ import {useState} from 'react'
 
 const ExerciseForm = ({handleAddExercise}) => {
   const [exercise, setExercise] = useState ({
-    name: '',
+    exname: '',
     sets: '',
     reps:'',
     weight:''
@@ -15,20 +15,20 @@ const ExerciseForm = ({handleAddExercise}) => {
 
 const handleSubmit = (evt) => {
     evt.preventDefault();
-    if (exercise.name && exercise.sets && exercise.reps ) {
+    if (exercise.exname && exercise.sets && exercise.reps ) {
       handleAddExercise(exercise)
-    setExercise({ name: '', sets: '', reps: '', weight: '' }); 
+    setExercise({ exname: '', sets: '', reps: '', weight: '' }); 
     }};
   
     return (
     <fieldset>
-        <label htmlFor='name'>Exercise:</label>
+        <label htmlFor='exname'>Exercise:</label>
         <input
         type="text"
-        id='name'
-        value={exercise.name}
+        id='exname'
+        value={exercise.exname}
         onChange={handleChange}
-        required
+
       />
       <label htmlFor='sets'>Sets:</label>
       <input
@@ -36,7 +36,6 @@ const handleSubmit = (evt) => {
         id="sets"
         value={exercise.sets}
         onChange={handleChange}
-        required
       />
       <label htmlFor='reps'>Reps:</label>
       <input
@@ -44,7 +43,6 @@ const handleSubmit = (evt) => {
         id="reps"
         value={exercise.reps}
         onChange={handleChange}
-        required
       />
       <label htmlFor='weight'>Weight:</label>
       <input
