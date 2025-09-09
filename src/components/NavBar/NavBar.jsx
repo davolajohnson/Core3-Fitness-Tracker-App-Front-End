@@ -1,10 +1,11 @@
 // src/components/NavBar/NavBar.jsx
 import { Link } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
+import { useContext } from "react";
+import { UserContext } from "../../contexts/UserContext";
 import logo from "../../assets/core3-logo.svg";
 
 export default function NavBar() {
-  const { user } = useAuth();
+  const { user } = useContext(UserContext);
 
   return (
     <header className="nav">
