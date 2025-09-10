@@ -43,7 +43,7 @@ export default function WorkoutForm({ handleAddWorkout}) {
       const workout ={
         ...form,
         exercises,
-        date: new Date(form.date).toISOString(), 
+        date: form.date,
         duration: Number(form.duration),
       };
       await handleAddWorkout(workout);

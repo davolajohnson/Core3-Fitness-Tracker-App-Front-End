@@ -39,11 +39,7 @@ export default function WorkoutList({ workouts, onDeleted }) {
                 <div>
                   <div className="item__title">{w.name}</div>
                   <div className="item__meta">
-                    {new Date(w.date).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
+                  {w.date.slice(0, 10)}
                   </div>
                 </div>
                 {/* <div style={{ display: "flex", gap: ".5rem" }}>
