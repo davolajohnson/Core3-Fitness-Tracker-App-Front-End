@@ -56,4 +56,22 @@ const deleteWorkout = async (workoutId) => {
 
 
 
-export { index, create, show, deleteWorkout};
+const update = async (workoutId, data) => {
+  const res = await fetch(`${BASE_URL}/${workoutId}`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(text || "Failed to update workout");
+  }
+
+  return res.json();
+};
+
+export { index, create, show, deleteWorkout, update };
