@@ -1,79 +1,192 @@
-import {useState, useEffect, useContext} from 'react'
-import { useParams } from 'react-router'
-import * as workoutService from '../../services/workoutService'
-import { UserContext } from '../../contexts/UserContext'
-const WorkoutDetails = ({handleDeleteWorkout}) => {
-    const { workoutId } = useParams();
-    
-    console.log('workoutId', workoutId)
-    const [workout, setWorkout] = useState(null)
-    const { user } = useContext(UserContext);
-    useEffect(() => {
-        const fetchWorkout = async () => {
-          const workoutData = await workoutService.show(workoutId);
-          setWorkout(workoutData);
-        };
-        fetchWorkout();
-      }, [workoutId]);
-    
+// src/components/WorkoutDetails/WorkoutDetails.jsx
+import { useState, useEffect, useContext } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { UserContext } from "../../contexts/UserContext";
+import * as workoutService from "../../services/workoutService";
+import ExerciseForm from "../ExerciseForm/ExerciseForm";
 
-      console.log('workout state:', workout);
-      const handleDeleteExercise = async (workoutId, exerciseId) => {
-        try {
-          await workoutService.deleteExercise(workoutId, exerciseId);
+export default function WorkoutDetails({ handleDeleteWorkout }) {
+  const { workoutId } = useParams();
+  const { user } = useContext(UserContext);
+  const nav = useNavigate();
 
-          setWorkout(prev => ({
-            ...prev,
-            exercises: prev.exercises.filter(ex => ex._id !== exerciseId),
-          }));
-        } catch (err) {
-          console.error("Failed to delete exercise", err);
-        }
+  const [form, setForm] = useState({
+    name: "",
+    notes: "",
+    date: new Date().toISOString().split("T")[0],
+    duration: "",
+  });
+  const [exercises, setExercises] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [err, setErr] = useState("");
+
+  // Load workout data
+  useEffect(() => {
+    const fetchWorkout = async () => {
+      try {
+        const workoutData = await workoutService.show(workoutId);
+        console.log("Workout fetched:", workoutData);
+
+        // Map API fields to form fields
+        const dateStr = workoutData.date
+          ? new Date(workoutData.date).toISOString().split("T")[0]
+          : new Date().toISOString().split("T")[0];
+
+        setForm({
+          name: workoutData.name || workoutData.workout_name || "",
+          notes: workoutData.notes || "",
+          date: dateStr,
+          duration: workoutData.duration || "",
+        });
+
+        setExercises(workoutData.exercises || []);
+      } catch (error) {
+        console.error(error);
+        setErr("Failed to load workout");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchWorkout();
+  }, [workoutId]);
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleAddExercise = (exercise) => {
+    const newEx = {
+      name: exercise.exname,
+      sets: Number(exercise.sets),
+      reps: Number(exercise.reps),
+      weight: Number(exercise.weight || 0),
+    };
+    setExercises([...exercises, newEx]);
+  };
+
+  const handleDeleteExercise = (idx) => {
+    setExercises((prev) => prev.filter((_, i) => i !== idx));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!user) return;
+
+    setErr("");
+    setLoading(true);
+
+    try {
+      const updatedWorkout = {
+        ...form,
+        exercises,
+        date: new Date(form.date).getTime(),
+        duration: Number(form.duration),
       };
-      const deleteExercise = (exerciseIndex) => {
-        setWorkout((prev) => ({
-          ...prev,
-          exercises: prev.exercises.filter((_, i) => i !== exerciseIndex),
-        }));
-      };
+
+      // Make sure your service has an "update" function
+      await workoutService.update(workoutId, updatedWorkout);
+      nav(`/${user._id}/workouts`);
+    } catch (error) {
+      console.error(error);
+      setErr(error.message || "Failed to update workout");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) return <p>Loading workout…</p>;
 
   return (
-<div>
-  {workout ? (
-    <div>
-      <h2>{new Date(workout.date).toLocaleDateString()}</h2>
-      <p>Notes: {workout.notes}</p>
-      <p>Duration: {workout.duration} minutes</p>
+    <main className="main">
+      <div className="container">
+        <form className="card stack form" onSubmit={handleSubmit}>
+          <h2>Edit Workout</h2>
+          {err && <div className="pill">⚠️ {err}</div>}
 
-      <h3>Exercises ({workout.exercises?.length || 0})</h3>
-      {workout.exercises && workout.exercises.length > 0 ? (
-        <ul>
-          {workout.exercises.map((ex, idx) => (
-            <li key={idx}>
-              <strong>{ex.name}</strong> — {ex.sets} sets × {ex.reps} reps
-              {ex.weight > 0 && ` @ ${ex.weight} lbs`}
-              <button 
-                onClick={() => deleteExercise(idx)} 
-                style={{ marginLeft: "10px" }}
-              >
-                Delete
-              </button>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>No exercises added.</p>
-      )}
+          <div className="form-row">
+            <label htmlFor="name">Workout Name</label>
+            <input
+              id="name"
+              name="name"
+              className="input"
+              value={form.name}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-      <button onClick={() => handleDeleteWorkout(workout._id)}>
-        Delete Workout
-      </button>
-    </div>
-  ) : (
-    <p>Loading workout...</p>
-  )}
-</div>
-  )
+          <div className="form-row">
+            <label htmlFor="date">Date</label>
+            <input
+              type="date"
+              id="date"
+              name="date"
+              value={form.date}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="form-row">
+            <label htmlFor="notes">Notes</label>
+            <textarea
+              id="notes"
+              name="notes"
+              className="textarea"
+              rows="4"
+              value={form.notes}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="form-row">
+            <label htmlFor="duration">Duration (minutes)</label>
+            <input
+              id="duration"
+              name="duration"
+              type="number"
+              min="1"
+              value={form.duration}
+              onChange={handleChange}
+            />
+          </div>
+
+          <ExerciseForm handleAddExercise={handleAddExercise} />
+
+          {exercises.length > 0 && (
+            <ul>
+              <h3>Exercises:</h3>
+              {exercises.map((ex, idx) => (
+                <li key={idx}>
+                  {ex.name} — {ex.sets} sets × {ex.reps} reps{" "}
+                  {ex.weight > 0 && ` @ ${ex.weight} lbs`}
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteExercise(idx)}
+                    style={{ marginLeft: "10px" }}
+                  >
+                    Delete
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+
+          <div style={{ display: "flex", gap: ".6rem" }}>
+            <button className="btn" type="submit">
+              Save Changes
+            </button>
+            <button
+              className="btn btn--warn"
+              type="button"
+              onClick={() => handleDeleteWorkout(workoutId)}
+            >
+              Delete Workout
+            </button>
+          </div>
+        </form>
+      </div>
+    </main>
+  );
 }
-
-export default WorkoutDetails
