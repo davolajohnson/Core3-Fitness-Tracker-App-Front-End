@@ -40,7 +40,12 @@ export default function WorkoutForm({ handleAddWorkout}) {
     setLoading(true);
 
     try {
-      const workout = { ...form, exercises, date: new Date(form.date).getTime(), duration: Number(form.duration) };
+      const workout ={
+        ...form,
+        exercises,
+        date: form.date,
+        duration: Number(form.duration),
+      };
       await handleAddWorkout(workout);
       nav(`/${user._id}/workouts`);
     } catch (error) {
