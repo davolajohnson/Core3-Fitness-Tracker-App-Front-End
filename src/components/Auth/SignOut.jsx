@@ -9,12 +9,11 @@ export default function SignOut() {
   const { setUser } = useAuth();
 
   useEffect(() => {
-    signOut();      // clear token
-    setUser(null);  // clear user in context
-    nav("/sign-in", { replace: true }); // avoid back-nav into authed views
+    signOut();       // clear token
+    setUser(null);   // clear user in context
+    nav("/sign-in"); // redirect
   }, [nav, setUser]);
 
   return null;
 }
-
 

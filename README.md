@@ -37,7 +37,8 @@ https://trello.com/b/oBjZy9fg
 
 Heroicons
  for icons
-
+You Tube 
+GA Classroom materials
 Google Fonts Inter
 
 Vercel
@@ -47,7 +48,7 @@ Vercel
 
 🌍 Deployed App
 
-Frontend (Vercel/Netlify): https://core3-frontend.vercel.app
+Frontend (Vercel/Netlify): https://warm-flan-7ed948.netlify.app/
 
 Backend (Render/Heroku): https://core3-backend.onrender.com
 
@@ -61,3 +62,8 @@ Add youtube videos that show you how to use machines and complete the exercise.
 Add nutrition/food logging (future stretch).
 
 Mobile Progressive Web App support.
+
+Created by: 
+Rudi Mageo
+Daniel Sangronis
+Davola Johnson
