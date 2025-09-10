@@ -38,7 +38,13 @@ export default function WorkoutList({ workouts, onDeleted }) {
               <Link to={`/${user._id}/workouts/${w._id}`} className="item" style={{ textDecoration: "none" }}>
                 <div>
                   <div className="item__title">{w.name}</div>
-                  <div className="item__meta">{new Date(w.createdAt).toLocaleString()}</div>
+                  <div className="item__meta">
+                    {new Date(w.date).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </div>
                 </div>
                 {/* <div style={{ display: "flex", gap: ".5rem" }}>
                   <Link className="btn btn--ghost" to={`/workouts/${w._id}`}>Open</Link>

@@ -5,7 +5,7 @@ import { UserContext } from "../../contexts/UserContext";
 import * as workoutService from "../../services/workoutService";
 import ExerciseForm from "../ExerciseForm/ExerciseForm";
 
-export default function WorkoutDetails({ handleDeleteWorkout }) {
+export default function WorkoutDetails({ onWorkoutUpdated, handleDeleteWorkout }) {
   const { workoutId } = useParams();
   const { user } = useContext(UserContext);
   const nav = useNavigate();
@@ -83,9 +83,10 @@ export default function WorkoutDetails({ handleDeleteWorkout }) {
         date: new Date(form.date).getTime(),
         duration: Number(form.duration),
       };
-
+      const savedWorkout = await workoutService.update(workoutId, updatedWorkout);
       // Make sure your service has an "update" function
       await workoutService.update(workoutId, updatedWorkout);
+      onWorkoutUpdated?.(savedWorkout);
       nav(`/${user._id}/workouts`);
     } catch (error) {
       console.error(error);

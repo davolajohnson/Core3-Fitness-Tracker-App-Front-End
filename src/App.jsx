@@ -45,6 +45,11 @@ export default function App() {
       console.error("Failed to delete workout:", err);
     }
   };
+      const handleUpdateWorkout = (updatedWorkout) => {
+        setWorkouts((prev) =>
+          prev.map((w) => (w._id === updatedWorkout._id ? updatedWorkout : w))
+        );
+      };
 
   return (
     <div className="app-shell">
@@ -54,7 +59,7 @@ export default function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/:userId/workouts" element={<WorkoutList workouts={workouts} />} />
         <Route path="/:userId/workouts/new" element={<WorkoutForm handleAddWorkout={handleAddWorkout} />} />
-        <Route path="/:userId/workouts/:workoutId" element={<WorkoutDetails handleDeleteWorkout={handleDeleteWorkout} />} />
+        <Route path="/:userId/workouts/:workoutId" element={<WorkoutDetails  handleDeleteWorkout={handleDeleteWorkout}   onWorkoutUpdated={handleUpdateWorkout}  />} />
         <Route path="/sign-in" element={<SignInForm />} />
         <Route path="/sign-up" element={<SignUpForm />} />
         <Route path="/dashboard" element={<Dashboard />} />
